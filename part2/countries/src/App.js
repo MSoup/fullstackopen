@@ -6,15 +6,24 @@ function App() {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState("")
 
-  const loadCountries = () => {
-    axios
-      .get("https://restcountries.com/v3.1/all")
-      .then(response => response.data)
-      .then(res => setCountries(res))
-      .then(res=>console.log(res))
-  }
+  // const loadCountries = () => {
+  //   axios
+  //     .get("https://restcountries.com/v3.1/all")
+  //     .then(response => response.data)
+  //     .then(res => {
+  //       const displayCountries = res.filter(country => country.name.common.startsWith(filter))
+  //       setCountries(displayCountries)
+  //     })
+  // }
 
-  useEffect(() => loadCountries(), [])
+  useEffect(() => {
+    axios
+    .get("https://restcountries.com/v3.1/all")
+    .then(response => response.data)
+    .then(res => {
+      setCountries(res.filter(country => country.name.common.startsWith(filter)))
+    });
+}, [filter])
 
   const showCountries = countries.map(country=>{
     return (
