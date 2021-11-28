@@ -6,16 +6,6 @@ function App() {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState("")
 
-  // const loadCountries = () => {
-  //   axios
-  //     .get("https://restcountries.com/v3.1/all")
-  //     .then(response => response.data)
-  //     .then(res => {
-  //       const displayCountries = res.filter(country => country.name.common.startsWith(filter))
-  //       setCountries(displayCountries)
-  //     })
-  // }
-
   useEffect(() => {
     axios
     .get("https://restcountries.com/v3.1/all")
@@ -25,22 +15,68 @@ function App() {
     });
 }, [filter])
 
-  const showCountries = countries.map(country=>{
+  const Reveal = (country) => {
+    const languages = []
+    for (const property in country.languages) {
+        languages.push(<li key={country + " " + country.languages[property]}>{country.languages[property]}</li>)
+      }
     return (
-      <div key={country.name.common}>
-        <p>Name: {country.name.common}</p>
+    <div className={country.name.common}>
+        <h2>{country.name.common}</h2>
         <p>Capital: {country.capital}</p>
-        <p>Region: {country.region}</p>
-        <br />
-    </div>
-    )
-  })
+        <p>Population: {country.population}</p>
+        <p><strong>Languages</strong></p>
+        <ul>
+          {languages}
+        </ul>
+      </div>
+      )
+  }
+
+  const handleClick = (country) => {
+    const id = country.name.common
+    const btn = document.getElementById(id)
+    const parentDiv = document.querySelector("." + id)
+    // btn logic
+    // "Show" was pressed, reveal country info
+    if (btn.textContent === "Show") {
+      btn.textContent = "Hide"
+      console.log("Test1", parentDiv)
+      console.log("Test2", btn)
+      parentDiv.appendChild(<Reveal country={country}/>)
+    }
+    // "Hide" was pressed, hide info
+    else {
+      btn.textContent = "Show"
+
+      parentDiv.removeChild(document.querySelector("." + id))
+    }
+  }
+
+  const ShowCountries = (countries) => {
+    if (countries.length === 1) {
+      const country = countries[0]
+      return <Reveal country={country}/> 
+    }
+    else if (countries.length <= 10) {
+      return ( countries.map(country => 
+        <div className={country.name.common} key={country.name.common}>
+          <span>{country.name.common} <button className="show" id={country.name.common} onClick={() => handleClick(country) }>Show</button></span>
+        </div>
+      ))
+    }
+    else {
+      return <p>Too many matches, specify another filter</p>
+    }
+
+  }
+ 
 
   return (
     <div>
     <h1>Test</h1>
     <Filter setFilter={setFilter}/>
-    {showCountries}
+    <ShowCountries countries={countries} />
     </div>
   );
 }
