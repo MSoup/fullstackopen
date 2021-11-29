@@ -3,7 +3,7 @@ import React from 'react';
 // Reveals data for one country
 const RevealCountryData = ({country}) => {
     return (
-    <div className={country.name.common}>
+    <div className="hide">
         <h2>{country.name.common}</h2>
         <p>Capital: {country.capital}</p>
         <p>Population: {country.population}</p>
